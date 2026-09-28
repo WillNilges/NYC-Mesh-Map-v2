@@ -8,7 +8,7 @@ replicaCount: 1
 # This sets the container image more information can be found here: https://kubernetes.io/docs/concepts/containers/images/
 image:
   repository: nycmeshnet/map-v2
-  digest: sha256:686d6d0c5b70f97e1e3e3a35f2ef2d570d38abd37f6558171e000f709b5f59f6
+  digest: sha256:d54ebfe13ea1e62e9865a4fa0364641e04d9b1d6473be69c3ad16e231d8a0a71
   # This sets the pull policy for images.
   pullPolicy: IfNotPresent
 
