@@ -18,10 +18,10 @@ WORKDIR /app
 
 COPY package*.json ./
 
+COPY . .
+
 RUN npm ci --omit=dev && \
     npm install -g tsx
-
-COPY . .
 
 # Production stage
 FROM nginx:alpine
