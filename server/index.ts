@@ -2,6 +2,7 @@ import 'dotenv/config'
 import express from 'express'
 
 const app = express()
+app.set('trust proxy', true) // trust X-Forwarded-* headers from nginx
 const port = 3001
 
 const MESHDB_API_URL = process.env.MESHDB_API_URL
