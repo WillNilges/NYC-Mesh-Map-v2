@@ -40,22 +40,10 @@ COPY --from=server-builder /usr/local/bin/tsx /usr/local/bin/tsx
 COPY --from=server-builder /app/server /app/server
 COPY --from=server-builder /app/node_modules /app/node_modules
 
-# Copy nginx config and install tsx
+# Copy nginx config and entrypoint script
 COPY nginx.conf /etc/nginx/conf.d/default.conf
-
-# Create entrypoint script
-RUN printf '#!/bin/sh\n\
-if [ -z "$MESHDB_API_URL" ] || [ -z "$MESHDB_API_TOKEN" ]; then\n\
-  echo "ERROR: MESHDB_API_URL and MESHDB_API_TOKEN environment variables are required";\n\
-  exit 1\n\
-fi\n\
-\n\
-# Start the Express API server in the background\n\
-dumb-init node --import=tsx /app/server/index.ts &\n\
-\n\
-# Start nginx in the foreground\n\
-nginx -g "daemon off;"\n' > /entrypoint.sh && \
-    chmod +x /entrypoint.sh
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
 
 EXPOSE 80
 
