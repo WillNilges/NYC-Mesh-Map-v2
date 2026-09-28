@@ -50,3 +50,12 @@ The frontend will be available at `http://localhost:5173/`. API requests to `/ap
 podman build . --tag willnilges:map-v2
 podman run --rm -it -p 8080:80 --name map-v2 willnilges:map-v2
 ```
+
+## Helm (K8s)
+
+To deploy
+
+```
+kubectl create ns map-v2
+helm --kubeconfig ~/.kube/config-dev3 --namespace map-v2 upgrade --install map-v2 -f map-v2/secrets.yaml map-v2
+```
