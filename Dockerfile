@@ -11,32 +11,31 @@ COPY . .
 
 RUN npm run build
 
-# Install tsx globally so the Express server can be run in the final image
+# Server stage: build dependencies and install tsx
 FROM node:26-alpine AS server-builder
 
 WORKDIR /app
 
 COPY package*.json ./
 
-RUN npm ci --omit=dev
+RUN npm ci --omit=dev && \
+    npm install -g tsx
 
 COPY . .
-
-RUN npm install -g tsx
 
 # Production stage
 FROM nginx:alpine
 
-RUN apk add --no-cache dumb-init
+RUN apk add --no-cache dumb-init libstdc++
 
 WORKDIR /app
 
 # Copy built frontend from builder
 COPY --from=builder /app/dist /usr/share/nginx/html
 
-# Copy server dependencies and source, then install tsx
-COPY --from=server-builder /usr/local/lib/node_modules/tsx /usr/local/lib/node_modules/tsx
-COPY --from=server-builder /usr/local/bin/tsx /usr/local/bin/tsx
+# Copy Node.js runtime and server files from server-builder
+COPY --from=server-builder /usr/local/bin/node /usr/local/bin/node
+COPY --from=server-builder /usr/local/lib /usr/local/lib
 COPY --from=server-builder /app/server /app/server
 COPY --from=server-builder /app/node_modules /app/node_modules
 

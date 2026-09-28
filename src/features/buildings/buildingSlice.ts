@@ -30,7 +30,7 @@ const buildingSlice = createSlice({
     reducers: {},
     extraReducers: (builder) => {
         builder.addCase(fetchBuildings.fulfilled, (state, action) => {
-            state.data = action.payload;
+            state.data = action.payload.results;
         })
     },
 })
