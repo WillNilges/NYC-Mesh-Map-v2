@@ -2,6 +2,7 @@ import 'dotenv/config'
 import express from 'express'
 
 const app = express()
+app.set('trust proxy', true)  // trust X-Forwarded-* headers from nginx
 const port = 3001
 
 const MESHDB_API_URL = process.env.MESHDB_API_URL
@@ -180,6 +181,11 @@ app.get('/api/map-style', async (req, res) => {
         }
 
         const style = await styleRes.text()
+        console.log('[DEBUG] protocol =', req.protocol)
+        console.log('[DEBUG] headers.x-forwarded-proto =', req.headers['x-forwarded-proto'])
+        console.log('[DEBUG] headers.x-forwarded-host =', req.headers['x-forwarded-host'])
+        console.log('[DEBUG] headers.host =', req.headers.host)
+        console.log('[DEBUG] socket remoteAddress =', req.socket.remoteAddress)
         const proxyBase = `${req.protocol}://${req.get('host')}/api/osm`
 
         res.type('application/json').send(style.replaceAll(OSM_BASE_URL, proxyBase))

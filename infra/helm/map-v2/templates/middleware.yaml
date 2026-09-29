@@ -1,0 +1,13 @@
+{{- if .Values.ingress.enabled -}}
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: {{ include "pano.fullname" . }}-forwardedproto
+  labels:
+    {{- include "pano.labels" . | nindent 4 }}
+spec:
+  headers:
+    customRequestHeaders:
+      X-Forwarded-Proto: "https"
+{{- end }}
