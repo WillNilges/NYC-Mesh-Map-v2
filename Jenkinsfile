@@ -17,6 +17,7 @@ pipeline {
             steps {
                 script {
                     sh "docker build -t ${IMAGE_REPO_NAME}:${IMAGE_TAG} ."
+                    env.IMAGE_DIGEST = sh(returnStdout: true, script: "docker inspect ${IMAGE_REPO_NAME}:${IMAGE_TAG} | jq -r '.[0].RepoDigests[0]' | cut -d'@' -f2").trim()
                 }
             }
         }
@@ -46,11 +47,10 @@ pipeline {
                     sh """
                         helm version
                         cd infra/helm
-                        helm --kubeconfig ${KUBECONFIG} --namespace map-v2 upgrade --install map-v2 -f ${SECRETS_YAML} map-v2
+                        helm --kubeconfig ${KUBECONFIG} --namespace map-v2 upgrade --install map-v2 -f ${SECRETS_YAML} --set image.digest=${IMAGE_DIGEST} map-v2
                     """
                 }
             }
         }
     }
 }
-
